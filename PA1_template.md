@@ -86,7 +86,7 @@ median(steps_per_day_imputed$steps)
 
 # convert date from string to date class
 ```{r}
-rf$date <- as.Date(rf$date, %Y-%m-%d)
+rf$date <- as.Date(rf$date)
 ```
 
 # add column to find the weekdays
@@ -94,7 +94,7 @@ rf$date <- as.Date(rf$date, %Y-%m-%d)
 rf$day <- weekdays(rf$date)
 ```
 
-# ass new column called day type
+# add new column called day type
 ```{r}
 rf$day_type <- c("weekday")
 ```
@@ -102,12 +102,11 @@ rf$day_type <- c("weekday")
 # if say is saturday or sunday, make weekend
 ```{r}
 for(i in 1:nrow(rf)){
-  if (rf$day[i]=="Saturday" | rf$day[i]=="Sunday"){
+  if (rf$day[i]=="토요일" || rf$day[i]=="일요일"){
     rf$day_type[i] <- "weekend"
   }
 }
 ```
-
 
 # convert day-type to factor
 ```{r}
@@ -119,9 +118,14 @@ rf$day_type<- as.factor(rf$day_type)
 mean_per_interval_imputed <- aggregate(steps ~ interval+day_type, rf, mean)
 ```
 
-# create plot
+# get the ggplot from library
 ```{r}
-qplot(interval, steps, data=mean_per_interval, geom=c("line"), facet= .~ day_type, ncol=1)
+library(ggplot2)
 ```
 
-# There is difference between weekdays and week end
+# create plot
+```{r}
+qplot(interval, steps, data=mean_per_interval_imputed, facets = .~ day_type, geom=c("line"), xlab="Interval", 
+      ylab="Number of steps", main="")
+```{r}
+# there is difference between weekdays and week end

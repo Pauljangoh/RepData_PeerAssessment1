@@ -60,17 +60,17 @@ median(steps_per_day_imputed$steps)
 # Differences in weekdays and weekends
 
 # convert date from string to date class
-rf$date <- as.Date(rf$date, %Y-%m-%d)
+rf$date <- as.Date(rf$date)
 
 # add column to find the weekdays
 rf$day <- weekdays(rf$date)
 
-# ass new column called day type
+# add new column called day type
 rf$day_type <- c("weekday")
 
 # if say is saturday or sunday, make weekend
 for(i in 1:nrow(rf)){
-  if (rf$day[i]=="Saturday" | rf$day[i]=="Sunday"){
+  if (rf$day[i]=="토요일" || rf$day[i]=="일요일"){
     rf$day_type[i] <- "weekend"
   }
 }
@@ -85,6 +85,6 @@ mean_per_interval_imputed <- aggregate(steps ~ interval+day_type, rf, mean)
 library(ggplot2)
 
 # create plot
-qplot(interval, steps, data=mean_per_interval, geom=c("line"), facet= .~ day_type, ncol=1)
-
+qplot(interval, steps, data=mean_per_interval_imputed, facets = .~ day_type, geom=c("line"), xlab="Interval", 
+      ylab="Number of steps", main="")
 # there is difference between weekdays and week end

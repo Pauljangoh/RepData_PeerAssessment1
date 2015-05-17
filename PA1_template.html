@@ -138,20 +138,20 @@ median(steps_per_day_imputed$steps)</code></pre>
 </div>
 <div id="convert-date-from-string-to-date-class" class="section level1">
 <h1>convert date from string to date class</h1>
-<pre class="{r}"><code>rf$date &lt;- as.Date(rf$date, %Y-%m-%d)</code></pre>
+<pre class="{r}"><code>rf$date &lt;- as.Date(rf$date)</code></pre>
 </div>
 <div id="add-column-to-find-the-weekdays" class="section level1">
 <h1>add column to find the weekdays</h1>
 <pre class="{r}"><code>rf$day &lt;- weekdays(rf$date)</code></pre>
 </div>
-<div id="ass-new-column-called-day-type" class="section level1">
-<h1>ass new column called day type</h1>
+<div id="add-new-column-called-day-type" class="section level1">
+<h1>add new column called day type</h1>
 <pre class="{r}"><code>rf$day_type &lt;- c(&quot;weekday&quot;)</code></pre>
 </div>
 <div id="if-say-is-saturday-or-sunday-make-weekend" class="section level1">
 <h1>if say is saturday or sunday, make weekend</h1>
 <pre class="{r}"><code>for(i in 1:nrow(rf)){
-  if (rf$day[i]==&quot;Saturday&quot; | rf$day[i]==&quot;Sunday&quot;){
+  if (rf$day[i]==&quot;토요일&quot; || rf$day[i]==&quot;일요일&quot;){
     rf$day_type[i] &lt;- &quot;weekend&quot;
   }
 }</code></pre>
@@ -164,12 +164,13 @@ median(steps_per_day_imputed$steps)</code></pre>
 <h1>aggregate the value</h1>
 <pre class="{r}"><code>mean_per_interval_imputed &lt;- aggregate(steps ~ interval+day_type, rf, mean)</code></pre>
 </div>
+<div id="get-the-ggplot-from-library" class="section level1">
+<h1>get the ggplot from library</h1>
+<pre class="{r}"><code>library(ggplot2)</code></pre>
+</div>
 <div id="create-plot" class="section level1">
 <h1>create plot</h1>
-<pre class="{r}"><code>qplot(interval, steps, data=mean_per_interval, geom=c(&quot;line&quot;), facet= .~ day_type, ncol=1)</code></pre>
-</div>
-<div id="there-is-difference-between-weekdays-and-week-end" class="section level1">
-<h1>There is difference between weekdays and week end</h1>
+<p><code>{r} qplot(interval, steps, data=mean_per_interval_imputed, facets = .~ day_type, geom=c(&quot;line&quot;), xlab=&quot;Interval&quot;,        ylab=&quot;Number of steps&quot;, main=&quot;&quot;)</code>{r} # there is difference between weekdays and week end</p>
 </div>
 
 
