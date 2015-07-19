@@ -42,7 +42,7 @@ for (i in 1:nrow(rf)){
     rf$steps[i] <- steps_value
   }
 }
-  
+
 
 # aggregate steps as per date to get total number of steps
 steps_per_day_imputed <- aggregate(steps ~ date, rf, sum)
@@ -69,6 +69,8 @@ rf$day <- weekdays(rf$date)
 rf$day_type <- c("weekday")
 
 # if say is saturday or sunday, make weekend
+# I use Rstudio in Korean so I have to use "配夸老" and "老夸老" instead of 
+# "sunday" and "saturday"
 for(i in 1:nrow(rf)){
   if (rf$day[i]=="配夸老" || rf$day[i]=="老夸老"){
     rf$day_type[i] <- "weekend"
@@ -87,4 +89,4 @@ library(ggplot2)
 # create plot
 qplot(interval, steps, data=mean_per_interval_imputed, facets = .~ day_type, geom=c("line"), xlab="Interval", 
       ylab="Number of steps", main="")
-# there is difference between weekdays and week end
+# there is difference between weekdays and weekend

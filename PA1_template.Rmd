@@ -1,25 +1,117 @@
 ---
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
+title: 'Reproducible Research: Peer Assessment 1'
+output: html_document
 ---
 
-
-## Loading and preprocessing the data
-
+### Loading and preprocessing the data
 
 
-## What is mean total number of steps taken per day?
+- Read the dataset by completed sets, and get the sum of steps per day  
+```{r}
+rf <- read.csv("activity.csv", header = TRUE)
+rf2 <- na.omit(rf)
+steps_per_day <- aggregate(steps~date, rf2, sum)
+```
+
+### What is mean total number of steps taken per day
+
+
+- Create the histogram of total number of steps in a day  
+```{r}
+hist(steps_per_day$steps, col=1, main="Total number of steps per day")
+```
+
+
+- Get the sum and medien of the steps as per date  
+```{r}
+mean(steps_per_day$steps)
+median(steps_per_day$steps)
+```
+
+### What is the average daily activity pattern?
+
+
+- Create line plot of steps of steps in interval   
+```{r}
+mean_per_interval <- aggregate(steps~interval, rf2, mean)
+plot(mean_per_interval$interval, mean_per_interval$steps, type="l", col=1,
+     main = "Average number of steps averaged over all days")
+```
+
+
+- Find the row of maximum average number of steps  
+```{r}
+mean_per_interval[which.max(mean_per_interval$steps),]
+```
+
+### Imputing missing values
+
+
+- Get rows of NA's  
+```{r}
+rf_NA <- rf[!complete.cases(rf),]
+nrow(rf_NA)
+```
+
+
+- Replacing NA by the mean of 5-minute interval, aggregate steps as per date
+```{r}
+for (i in 1:nrow(rf)){
+  if(is.na(rf$steps[i])){
+    interval_value <- rf$interval[i]
+    row_id <- which(mean_per_interval$interval == interval_value)
+    steps_value <- mean_per_interval$steps[row_id]
+    rf$steps[i] <- steps_value
+  }
+}
+steps_per_day_imputed <- aggregate(steps ~ date, rf, sum)
+```
+
+
+- Create histogram
+```{r}
+hist(steps_per_day_imputed$steps, col=1, main="Imputed histogram of total number of steps per day")
+```
+
+
+- Get the mean of total number of steps per day
+```{r}
+mean(steps_per_day_imputed$steps)
+median(steps_per_day_imputed$steps)
+```
+
+
+* imputation of the data had changed the median slightly, but the mean remains the same
+
+
+### Are there differences in activity patterns between weekdays and weekends?
+
+
+- Seperate the data by weekdays and weekends  
+- Somehow my R is using Korean so I have use sunday and saturday in Korean
+
+```{r}
+rf$date <- as.Date(rf$date)
+rf$day <- weekdays(rf$date)
+rf$day_type <- c("weekday")
+for(i in 1:nrow(rf)){
+  if (rf$day[i]=="토요일" || rf$day[i]=="일요일"){
+    rf$day_type[i] <- "weekend"
+  }
+}
+rf$day_type<- as.factor(rf$day_type)
+mean_per_interval_imputed <- aggregate(steps ~ interval+day_type, rf, mean)
+```
+
+- Get the ggplot and create plot
+```{r}
+library(ggplot2)
+qplot(interval, steps, data=mean_per_interval_imputed, facets = .~ day_type, geom=c("line"), xlab="Interval", 
+      ylab="Number of steps", main="")
+```
+
+* And we can see there is difference between them.
 
 
 
-## What is the average daily activity pattern?
 
-
-
-## Imputing missing values
-
-
-
-## Are there differences in activity patterns between weekdays and weekends?
